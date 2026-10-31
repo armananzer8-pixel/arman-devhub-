@@ -7,12 +7,10 @@ Day 235 - Security and Deployment Preparation
 Local development configuration with environment-based
 production settings.
 """
-
 import os
 from pathlib import Path
-
+import importlib
 from django.core.exceptions import ImproperlyConfigured
-
 
 # =====================================
 # 1. BASE DIRECTORY
@@ -32,6 +30,10 @@ DEBUG = os.environ.get(
     "DJANGO_DEBUG", "True"
 ).strip().lower() == "true"
 
+if not DEBUG and not os.environ.get("DATABASE_URL"):
+    raise ImproperlyConfigured(
+        "DATABASE_URL must be configured in production."
+    )
 
 # =====================================
 # 3. SECRET KEY
@@ -100,6 +102,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -151,12 +154,31 @@ WSGI_APPLICATION = "mywebsite.wsgi.application"
 # 10. DATABASE
 # =====================================
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+if DATABASE_URL:
+    try:
+        database_url = importlib.import_module("dj_database_url")
+    except ModuleNotFoundError as exc:
+        raise ImproperlyConfigured(
+            "DATABASE_URL is set, but dj-database-url is not installed."
+        ) from exc
+
+    DATABASES = {
+        "default": database_url.config(
+            default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+            conn_max_age=600,
+            conn_health_checks=True,
+            ssl_require=not DEBUG,
+        )
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
 # =====================================
@@ -208,11 +230,18 @@ USE_TZ = True
 # 13. STATIC FILES
 # =====================================
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 # =====================================
 # 14. EMAIL CONFIGURATION
 # =====================================
@@ -240,6 +269,14 @@ MEDIA_URL = "/media/"
 
 # HTTPS security options are activated only
 # when explicitly configured for production.
+
+# Trust HTTPS information from Render's proxy.
+# Enable this only when deployed behind Render's trusted proxy.
+if not DEBUG and os.environ.get("RENDER") == "true":
+    SECURE_PROXY_SSL_HEADER = (
+        "HTTP_X_FORWARDED_PROTO",
+        "https",
+    )
 
 SECURE_SSL_REDIRECT = (
     not DEBUG
