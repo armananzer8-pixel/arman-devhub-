@@ -1,0 +1,184 @@
+
+{% extends "homepage/base.html" %}
+
+{% block title %}
+Add Note | Arman DevHub
+{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+    .note-form-container {
+        max-width: 650px;
+        margin: 35px auto;
+    }
+
+    .note-description {
+        text-align: center;
+        color: #64748b;
+    }
+
+    .message-summary {
+        background-color: #eef2ff;
+        padding: 18px;
+        border-radius: 10px;
+        margin: 22px 0;
+    }
+
+    .message-summary h3 {
+        margin-top: 0;
+    }
+
+    .note-field {
+        margin-top: 20px;
+    }
+
+    .note-field label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+    }
+
+    .note-field textarea {
+        display: block;
+        width: 100%;
+        min-height: 140px;
+        padding: 12px;
+
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font: inherit;
+        box-sizing: border-box;
+        resize: vertical;
+    }
+
+    .note-field textarea:focus {
+        outline: 2px solid #4338ca;
+        outline-offset: 1px;
+    }
+
+    .note-errors {
+        color: #b91c1c;
+        background-color: #fef2f2;
+        padding: 10px;
+        border-radius: 8px;
+        margin-top: 8px;
+    }
+
+    .form-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-top: 22px;
+    }
+
+    .save-button {
+        background-color: #4338ca;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .save-button:hover {
+        background-color: #312e81;
+    }
+
+    .cancel-link {
+        color: #64748b;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="card note-form-container">
+
+    <h1>Add a Staff Note</h1>
+
+    <p class="note-description">
+        Add a note to this contact message.
+    </p>
+
+    <!-- SELECTED MESSAGE -->
+
+    <div class="message-summary">
+
+        <h3>Selected Message</h3>
+
+        <p>
+            <strong>Sender:</strong>
+            {{ contact_message.name }}
+        </p>
+
+        <p>
+            <strong>Message:</strong>
+            {{ contact_message.message|truncatechars:150 }}
+        </p>
+
+    </div>
+
+
+    <!-- NOTE FORM -->
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+
+            <div class="note-errors" role="alert">
+                {{ form.non_field_errors }}
+            </div>
+
+        {% endif %}
+
+        <div class="note-field">
+
+            <label for="{{ form.note.id_for_label }}">
+                {{ form.note.label }}
+            </label>
+
+            {{ form.note }}
+
+            {% if form.note.errors %}
+
+                <div class="note-errors" role="alert">
+                    {{ form.note.errors }}
+                </div>
+
+            {% endif %}
+
+        </div>
+
+        <div class="form-actions">
+
+            <button type="submit"
+                    class="save-button">
+                Save Note
+            </button>
+
+            <a
+                href="{% url 'message_detail' contact_message.pk %}"
+                class="cancel-link"
+            >
+                Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

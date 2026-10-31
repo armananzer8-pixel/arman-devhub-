@@ -1,0 +1,103 @@
+{% extends "homepage/base.html" %}
+
+{% block title %}
+My Profile - Django Website
+{% endblock %}
+
+{% block content %}
+
+<h1>My Profile</h1>
+
+<div class="card">
+
+    <h2>
+    Welcome,
+    {% if user.first_name %}
+        {{ user.get_full_name|default:user.first_name }}!
+    {% else %}
+        {{ user.username }}!
+    {% endif %}
+</h2>
+    <p>
+        <strong>Username:</strong>
+        {{ user.username }}
+    </p>
+
+    <p>
+        <strong>Account Type:</strong>
+
+        {% if user.is_staff %}
+            Staff / Administrator
+        {% else %}
+            Regular User
+        {% endif %}
+    </p>
+
+    <p>
+        <strong>Joined:</strong>
+        {{ user.date_joined|date:"d M Y" }}
+    </p>
+
+</div>
+
+
+<div class="card">
+
+    <h2>Edit Profile</h2>
+
+    {% for message in messages %}
+
+        <p class="success-message">
+            {{ message }}
+        </p>
+
+    {% endfor %}
+
+    <form method="POST" class="contact-form">
+
+        {% csrf_token %}
+<!-- ================================= -->
+<!-- DAY 175 - DEVELOPER PROFILE -->
+<!-- ================================= -->
+
+<hr>
+
+<h2>Developer Information</h2>
+
+<div style="
+    background-color: #f3f4f6;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 15px;
+">
+
+    <p>
+        <label for="{{ developer_form.bio.id_for_label }}">
+            Developer Bio:
+        </label>
+    </p>
+
+    {{ developer_form.bio }}
+    {{ developer_form.bio.errors }}
+
+    <p>
+        <label for="{{ developer_form.favorite_language.id_for_label }}">
+            Favorite Programming Language:
+        </label>
+    </p>
+
+    {{ developer_form.favorite_language }}
+    {{ developer_form.favorite_language.errors }}
+
+</div>
+        {{ form.as_p }}
+
+        <button type="submit">
+            Save Changes
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

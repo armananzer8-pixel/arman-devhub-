@@ -1,0 +1,66 @@
+
+{% extends "homepage/base.html" %}
+
+{% block content %}
+
+<div style="
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 30px;
+    border-radius: 15px;
+    background: white;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.12);
+">
+
+    <h1 style="color: #5936a2;">
+        Edit Report Category
+    </h1>
+
+    <p>
+        You are editing: <strong>{{ object.name }}</strong>
+    </p>
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        {{ form.non_field_errors }}
+
+        {% for field in form %}
+
+            <div style="margin-bottom: 18px;">
+
+                <label for="{{ field.id_for_label }}">
+                    {{ field.label }}
+                </label>
+
+                <div style="margin-top: 6px;">
+                    {{ field }}
+                </div>
+
+                {% for error in field.errors %}
+                    <p style="color: #b42318;">
+                        {{ error }}
+                    </p>
+                {% endfor %}
+
+            </div>
+
+        {% endfor %}
+
+        <button type="submit" style="
+            padding: 12px 24px;
+            background: #5936a2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        ">
+            Save Changes
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

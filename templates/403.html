@@ -1,0 +1,33 @@
+{% extends "homepage/base.html" %}
+
+{% block title %}
+403 - Access Denied
+{% endblock %}
+
+{% block content %}
+
+<div class="card" style="text-align: center;">
+
+    <h1 style="font-size: 70px; color: #dc2626;">
+        403
+    </h1>
+
+    <h2>Access Denied</h2>
+
+    <p>
+        Sorry! You do not have permission
+        to access this page.
+    </p>
+
+    <p>
+        Please contact an administrator
+        if you believe this is a mistake.
+    </p>
+
+    <a href="{% url 'home' %}">
+        Back to Home
+    </a>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "homepage/base.html" %}
+
+{% block title %}
+<h1>{{ page_heading }}</h1>
+{% endblock %}
+
+{% block content %}
+
+<h1>{{ page_heading }}</h1>
+
+<div class="card">
+
+    <h2>Welcome to Your Learning Hub!</h2>
+
+    <p>
+        Learn the building blocks of
+        your Django backend application.
+    </p>
+
+</div>
+
+<div class="card">
+
+    <h2>Topics You're Learning</h2>
+
+    {% for topic in topics %}
+
+        <div style="
+            background-color: #f3f4f6;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        ">
+
+            <h3>{{ topic.name }}</h3>
+
+            <p>{{ topic.description }}</p>
+
+        </div>
+
+    {% empty %}
+
+        <p>No learning topics available.</p>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

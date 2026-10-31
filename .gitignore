@@ -1,0 +1,67 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Local database
+db.sqlite3
+db.sqlite3-journal
+
+# Private uploads
+private_media/
+
+# Collected static files
+staticfiles/
+
+# Test and coverage output
+.coverage
+htmlcov/
+.pytest_cache/
+test_errors.txt
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+.venv/
+venv/
+
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# Local database
+db.sqlite3
+db.sqlite3-journal
+
+# Private files
+private_media/
+
+# Generated static files
+staticfiles/
+
+# Local backups
+homepage/signals_backup.py
+homepage/static/homepage/forms.py
+staged-backup.patch

@@ -1,0 +1,374 @@
+{% extends "homepage/base.html" %}
+
+{% block title %}
+Contact Messages
+{% endblock %}
+
+{% block content %}
+
+<h1>Contact Messages</h1>
+<!-- ================================= -->
+<!-- DAY 179 - STATISTICS DASHBOARD -->
+<!-- ================================= -->
+
+<div class="card">
+
+    <h2>Messages Dashboard</h2>
+
+    <div style="
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    ">
+
+        <div style="
+            background-color: #eef2ff;
+            padding: 20px;
+            border-radius: 10px;
+            flex: 1;
+        ">
+
+            <h3>Total Messages</h3>
+
+            <h1>{{ statistics.total_messages }}</h1>
+
+        </div>
+
+
+        <div style="
+            background-color: #dcfce7;
+            padding: 20px;
+            border-radius: 10px;
+            flex: 1;
+        ">
+
+            <h3>Total Notes</h3>
+
+            <h1>{{ statistics.total_notes }}</h1>
+
+        </div>
+
+
+        <div style="
+            background-color: #fef3c7;
+            padding: 20px;
+            border-radius: 10px;
+            flex: 1;
+        ">
+
+            <h3>Used Tags</h3>
+
+            <h1>{{ statistics.used_tags }}</h1>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================================= -->
+<!-- MOST USED TAGS -->
+<!-- ================================= -->
+
+<div class="card">
+
+    <h2>Most Used Tags</h2>
+
+    {% for tag in popular_tags %}
+
+        <div style="
+            background-color: #f3f4f6;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        ">
+
+            <strong>{{ tag.name }}</strong>
+
+            <p>
+                Used in
+                {{ tag.message_count }}
+                message{{ tag.message_count|pluralize }}
+            </p>
+
+        </div>
+
+    {% empty %}
+
+        <p>No tags have been assigned to messages yet.</p>
+
+    {% endfor %}
+
+</div>
+
+<!-- DAY 172 - ADVANCED FILTER FORM -->
+
+<div class="card">
+
+    <h2>Advanced Search & Sorting</h2>
+
+    <form method="GET" action="{% url 'message_list' %}">
+
+        <p>
+            <label for="search-box">
+                Search Messages
+            </label>
+        </p>
+
+        <input
+            id="search-box"
+            type="text"
+            name="q"
+            value="{{ search_query }}"
+            placeholder="Enter name, email or message"
+            style="
+                padding: 12px;
+                width: 90%;
+                border-radius: 6px;
+                border: 1px solid #ccc;
+            "
+        >
+
+
+        <p>
+            <label for="field-filter">
+                Search In
+            </label>
+        </p>
+
+        <select
+            id="field-filter"
+            name="field"
+            style="padding: 12px;"
+        >
+
+            <option value="all"
+                {% if search_field == "all" %}selected{% endif %}>
+                All Fields
+            </option>
+
+            <option value="name"
+                {% if search_field == "name" %}selected{% endif %}>
+                Name
+            </option>
+
+            <option value="email"
+                {% if search_field == "email" %}selected{% endif %}>
+                Email
+            </option>
+
+            <option value="message"
+                {% if search_field == "message" %}selected{% endif %}>
+                Message
+            </option>
+
+        </select>
+
+
+        <p>
+            <label for="sort-filter">
+                Sort By
+            </label>
+        </p>
+
+        <select
+            id="sort-filter"
+            name="sort"
+            style="padding: 12px;"
+        >
+
+            <option value="newest"
+                {% if sort_by == "newest" %}selected{% endif %}>
+                Newest First
+            </option>
+
+            <option value="oldest"
+                {% if sort_by == "oldest" %}selected{% endif %}>
+                Oldest First
+            </option>
+
+            <option value="name_asc"
+                {% if sort_by == "name_asc" %}selected{% endif %}>
+                Name A-Z
+            </option>
+
+            <option value="name_desc"
+                {% if sort_by == "name_desc" %}selected{% endif %}>
+                Name Z-A
+            </option>
+
+        </select>
+
+
+        <p>
+            <button type="submit">
+                Apply Filters
+            </button>
+        </p>
+
+    </form>
+
+    <a href="{% url 'message_list' %}">
+        Clear Filters
+    </a>
+
+</div>
+
+
+<!-- SAVED MESSAGES -->
+
+<div class="card">
+
+    <h2>Saved Contact Messages</h2>
+
+    <p>
+        Matching Messages:
+        {{ page_obj.paginator.count }}
+    </p>
+
+    {% if search_query %}
+
+        <p>
+            Results for:
+            <strong>{{ search_query }}</strong>
+        </p>
+
+    {% endif %}
+
+    {% for message in page_obj %}
+
+        <div style="
+            background-color: #f3f4f6;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        ">
+
+        <!-- DAY 174 - MESSAGE TAGS -->
+
+<h4>Tags:</h4>
+
+{% for tag in message.tags.all %}
+
+    <span style="
+        background-color: #4338ca;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 15px;
+        margin: 4px;
+        display: inline-block;
+    ">
+        {{ tag.name }}
+    </span>
+
+{% empty %}
+
+    <p>No tags assigned yet.</p>
+
+{% endfor %}
+
+            <h3>{{ message.name }}</h3>
+
+            <p>
+                <strong>Email:</strong>
+                {{ message.email }}
+            </p>
+
+            <p>
+                <strong>Message:</strong>
+                {{ message.message|linebreaksbr }}
+            </p>
+
+            <p>
+                <strong>Received:</strong>
+                {{ message.created_at|date:"d M Y, h:i A" }}
+            </p>
+
+        </div>
+
+    {% empty %}
+
+        <p>No messages match your search.</p>
+
+    {% endfor %}
+
+</div>
+
+
+<!-- PAGINATION -->
+
+{% if page_obj.has_other_pages %}
+
+<div class="card" style="text-align: center;">
+
+    <h3>Navigate Messages</h3>
+
+    {% if page_obj.has_previous %}
+
+        <a href="?q={{ search_query|urlencode }}&amp;field={{ search_field }}&amp;sort={{ sort_by }}&amp;page=1">
+            First
+        </a>
+
+        &nbsp;
+
+        <a href="?q={{ search_query|urlencode }}&amp;field={{ search_field }}&amp;sort={{ sort_by }}&amp;page={{ page_obj.previous_page_number }}">
+            Previous
+        </a>
+
+    {% endif %}
+
+
+    {% for num in page_obj.paginator.page_range %}
+
+        {% if page_obj.number == num %}
+
+            <strong style="
+                background-color: #4338ca;
+                color: white;
+                padding: 8px 12px;
+                border-radius: 6px;
+                margin: 4px;
+            ">
+                {{ num }}
+            </strong>
+
+        {% else %}
+
+            <a
+                href="?q={{ search_query|urlencode }}&amp;field={{ search_field }}&amp;sort={{ sort_by }}&amp;page={{ num }}"
+                style="margin: 8px;"
+            >
+                {{ num }}
+            </a>
+
+        {% endif %}
+
+    {% endfor %}
+
+
+    {% if page_obj.has_next %}
+
+        <a href="?q={{ search_query|urlencode }}&amp;field={{ search_field }}&amp;sort={{ sort_by }}&amp;page={{ page_obj.next_page_number }}">
+            Next
+        </a>
+
+        &nbsp;
+
+        <a href="?q={{ search_query|urlencode }}&amp;field={{ search_field }}&amp;sort={{ sort_by }}&amp;page={{ page_obj.paginator.num_pages }}">
+            Last
+        </a>
+
+    {% endif %}
+
+
+    <p>
+        Page {{ page_obj.number }}
+        of {{ page_obj.paginator.num_pages }}
+    </p>
+
+</div>
+
+{% endif %}
+
+{% endblock %}

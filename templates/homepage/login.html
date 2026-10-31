@@ -1,0 +1,50 @@
+{% extends "homepage/base.html" %}
+
+{% block title %}
+Login - My Django Website
+{% endblock %}
+
+{% block content %}
+
+<h1>Login to My Website</h1>
+
+<div class="card">
+
+    <h2>User Login</h2>
+
+    <p>Enter your username and password.</p>
+
+    <form method="POST"
+          action="{% url 'login' %}"
+          class="contact-form">
+
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <input
+            type="hidden"
+            name="next"
+            value="{{ next }}"
+        >
+
+        <button type="submit">
+            Login
+        </button>
+
+    </form>
+<p>
+    <a href="{% url 'password_reset' %}">
+        Forgot Password?
+    </a>
+</p>
+    {% if form.errors %}
+        <p style="color: red;">
+            Invalid username or password.
+            Please try again.
+        </p>
+    {% endif %}
+
+</div>
+
+{% endblock %}

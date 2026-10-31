@@ -1,0 +1,42 @@
+{% extends "homepage/base.html" %}
+
+{% block title %}
+Create Account - My Django Website
+{% endblock %}
+
+{% block content %}
+
+<h1>Create Your Account</h1>
+
+<div class="card">
+
+    <h2>User Registration</h2>
+
+    <p>
+        Fill in the details below to create
+        your Django account.
+    </p>
+
+    <form method="POST" class="contact-form">
+
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">
+            Create Account
+        </button>
+
+    </form>
+
+    <p>
+        Already have an account?
+
+        <a href="{% url 'login' %}">
+            Login here
+        </a>
+    </p>
+
+</div>
+
+{% endblock %}

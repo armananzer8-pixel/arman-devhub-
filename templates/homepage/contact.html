@@ -1,0 +1,31 @@
+{% extends "homepage/base.html" %}
+
+{% block title %}Contact Me{% endblock %}
+
+{% block content %}
+
+<h1>Contact Me</h1>
+
+<div class="card">
+
+    <h2>Send a Message</h2>
+
+    <form method="POST" class="contact-form">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">
+            Submit Message
+        </button>
+    </form>
+
+    {% if success_message %}
+        <p class="success-message">
+            {{ success_message }}
+        </p>
+    {% endif %}
+
+</div>
+
+{% endblock %}

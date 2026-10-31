@@ -1,0 +1,387 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}
+            Arman DevHub
+        {% endblock %}
+    </title>
+
+    <style>
+
+        /* ============================
+           GLOBAL STYLING
+        ============================ */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #bbf7d0;
+            color: #1f2937;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* ============================
+           WEBSITE NAVIGATION
+        ============================ */
+
+        .navbar {
+            background-color: #4338ca;
+            padding: 16px 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+        }
+
+        .navbar a {
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            transition: opacity 0.2s ease;
+        }
+
+        .navbar a:hover {
+            opacity: 0.75;
+        }
+
+        .navbar .brand {
+            font-size: 21px;
+            font-weight: bold;
+            margin-right: auto;
+            white-space: nowrap;
+        }
+
+        .navbar a.active {
+            background-color: rgba(255, 255, 255, 0.18);
+            padding: 8px 10px;
+            border-radius: 6px;
+        }
+
+        .username {
+            color: #e0e7ff;
+            font-size: 13px;
+        }
+
+        .logout-form {
+            margin: 0;
+        }
+
+        .logout-button {
+            background-color: #ffffff;
+            color: #4338ca;
+            border: none;
+            border-radius: 6px;
+            padding: 9px 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .logout-button:hover {
+            background-color: #e0e7ff;
+        }
+
+        /* ============================
+           MAIN CONTENT
+        ============================ */
+
+        .main-content {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 25px 20px;
+            flex: 1;
+        }
+
+        /* ============================
+           DJANGO MESSAGES
+        ============================ */
+
+        .messages-container {
+            max-width: 1000px;
+            width: 100%;
+            margin: 20px auto 0;
+            padding: 0 20px;
+        }
+
+        .message-alert {
+            background: white;
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 5px solid #4338ca;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .message-alert.success {
+            border-left-color: #16a34a;
+        }
+
+        .message-alert.error {
+            border-left-color: #dc2626;
+        }
+
+        .message-alert.warning {
+            border-left-color: #f59e0b;
+        }
+
+        /* ============================
+           FOOTER
+        ============================ */
+
+        .footer {
+            background-color: #312e81;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .footer p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        /* ============================
+           RESPONSIVE NAVIGATION
+        ============================ */
+
+        @media (max-width: 768px) {
+
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 14px;
+            }
+
+            .navbar .brand {
+                margin-right: 0;
+            }
+
+            .main-content {
+                padding: 15px;
+            }
+
+        }
+
+    </style>
+
+    {% block extra_css %}
+    {% endblock %}
+
+</head>
+
+<body>
+
+    <!-- ============================
+         WEBSITE NAVIGATION
+    ============================ -->
+
+    <nav class="navbar">
+
+        <!-- WEBSITE BRAND -->
+
+        <a href="{% url 'home' %}" class="brand">
+            &lt;/&gt; Arman DevHub
+        </a>
+
+        <!-- PUBLIC NAVIGATION -->
+
+        <a href="{% url 'home' %}"
+           {% if request.resolver_match.url_name == 'home' %}
+               class="active"
+           {% endif %}>
+            Home
+        </a>
+
+        <a href="{% url 'about' %}"
+           {% if request.resolver_match.url_name == 'about' %}
+               class="active"
+           {% endif %}>
+            About
+        </a>
+
+        <a href="{% url 'contact' %}"
+           {% if request.resolver_match.url_name == 'contact' %}
+               class="active"
+           {% endif %}>
+            Contact
+        </a>
+
+        <a href="{% url 'learning_hub' %}"
+           {% if request.resolver_match.url_name == 'learning_hub' %}
+               class="active"
+           {% endif %}>
+            Learning Hub
+        </a>
+
+        <!-- AUTHENTICATED USERS -->
+
+        {% if user.is_authenticated %}
+
+            <a href="{% url 'profile' %}"
+               {% if request.resolver_match.url_name == 'profile' %}
+                   class="active"
+               {% endif %}>
+                My Profile
+            </a>
+
+            <a href="{% url 'password_change' %}">
+                Change Password
+            </a>
+
+            <!-- ============================
+                 STAFF-ONLY NAVIGATION
+            ============================ -->
+
+            {% if user.is_staff %}
+
+                <!-- MESSAGE MANAGEMENT -->
+
+                <a href="{% url 'message_list' %}">
+                    Messages
+                </a>
+
+                <a href="{% url 'message_browse' %}">
+                    Message Browser
+                </a>
+
+                <!-- ATTACHMENT DASHBOARD -->
+
+                <a href="{% url 'attachment_dashboard' %}">
+                    Attachments
+                </a>
+
+                <!-- ATTACHMENT SUMMARY REPORT -->
+
+                <a href="{% url 'attachment_summary_report' %}"
+                   {% if request.resolver_match.url_name == 'attachment_summary_report' %}
+                       class="active"
+                   {% endif %}>
+                    Reports
+                </a>
+
+                <!-- DAY 218: CATEGORY DASHBOARD -->
+
+                <a href="{% url 'report_category_list' %}"
+                   {% if request.resolver_match.url_name == 'report_category_list' %}
+                       class="active"
+                   {% endif %}>
+                    Report Categories
+                </a>
+
+            {% endif %}
+
+            <!-- USER INFORMATION -->
+
+            <span class="username">
+                Hello,
+                {{ user.get_full_name|default:user.username }}!
+            </span>
+
+            <!-- LOGOUT -->
+
+            <form method="POST"
+                  action="{% url 'logout' %}"
+                  class="logout-form">
+
+                {% csrf_token %}
+
+                <button type="submit"
+                        class="logout-button">
+                    Logout
+                </button>
+
+            </form>
+
+        {% else %}
+
+            <!-- GUEST NAVIGATION -->
+
+            <a href="{% url 'login' %}">
+                Login
+            </a>
+
+            <a href="{% url 'signup' %}">
+                Sign Up
+            </a>
+
+        {% endif %}
+
+    </nav>
+
+    <!-- ============================
+         DJANGO NOTIFICATIONS
+    ============================ -->
+
+    {% if messages %}
+
+        <div class="messages-container">
+
+            {% for message in messages %}
+
+                <div class="message-alert {{ message.tags }}">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+    <!-- ============================
+         MAIN PAGE CONTENT
+    ============================ -->
+
+    <main class="main-content">
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+    <!-- ============================
+         WEBSITE FOOTER
+    ============================ -->
+
+    <footer class="footer">
+
+        <p>
+            &copy; {% now "Y" %} Arman DevHub.
+            All rights reserved.
+        </p>
+
+        <p>
+            Learn. Build. Innovate.
+        </p>
+
+    </footer>
+
+    {% block extra_js %}
+    {% endblock %}
+
+</body>
+
+</html>

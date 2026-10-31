@@ -1,0 +1,1625 @@
+
+{% extends "homepage/base.html" %}
+{% block title %}Report Categories | Arman DevHub{% endblock %}
+{% block content %}
+
+<style>
+/* MAIN DASHBOARD */
+.category-dashboard {
+    max-width: 1050px;
+    margin: 40px auto;
+    padding: 28px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, .1);
+    font-family: Arial, sans-serif;
+    color: #1e293b;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.dashboard-header h1 {
+    margin: 0;
+    color: #4338ca;
+}
+
+.dashboard-subtitle {
+    color: #64748b;
+    font-size: 14px;
+}
+
+.add-category,
+.search-button {
+    background: #4338ca;
+    color: white;
+    border: 0;
+    padding: 12px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.add-category:hover,
+.search-button:hover {
+    background: #3730a3;
+}
+
+/* STATISTICS */
+.statistics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.stat-card {
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    text-align: center;
+    background: #f8fafc;
+}
+
+.stat-card h3 {
+    margin: 0 0 12px;
+    font-size: 14px;
+    color: #475569;
+}
+
+.stat-number {
+    margin: 0;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.stat-total .stat-number { color: #4338ca; }
+.stat-high .stat-number { color: #15803d; }
+.stat-low .stat-number { color: #b45309; }
+.stat-average .stat-number { color: #0369a1; }
+
+/* DASHBOARD SECTIONS */
+.analytics-section,
+.insights-section,
+.top-report-section,
+.filter-presets-section,
+.saved-filters-section,
+.recent-history-section {
+    padding: 22px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    margin-bottom: 25px;
+}
+
+.analytics-section h2,
+.insights-section h2,
+.top-report-section h2,
+.filter-presets-section h2,
+.saved-filters-section h2,
+.recent-history-section h2 {
+    color: #4338ca;
+    font-size: 20px;
+    margin: 0 0 15px;
+}
+
+/* PRIORITY ANALYTICS */
+.analytics-cards,
+.insights-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.analytics-card,
+.insight-card {
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.analytics-card h3,
+.insight-card h3 {
+    margin: 0 0 10px;
+    font-size: 14px;
+}
+
+.analytics-number {
+    font-size: 30px;
+    font-weight: 700;
+    margin: 0 0 8px;
+}
+
+.analytics-count {
+    margin: 0;
+    font-size: 13px;
+}
+
+.analytics-high,
+.insight-highest {
+    background: #f0fdf4;
+    color: #166534;
+}
+
+.analytics-low,
+.insight-lowest {
+    background: #fffbeb;
+    color: #92400e;
+}
+
+.analytics-bar {
+    display: flex;
+    width: 100%;
+    height: 18px;
+    background: #e5e7eb;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.analytics-bar-high {
+    background: #16a34a;
+    height: 100%;
+    width: 0;
+}
+
+.analytics-bar-low {
+    background: #f59e0b;
+    height: 100%;
+    width: 0;
+}
+
+.analytics-legend {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+    color: #475569;
+    font-size: 13px;
+}
+
+.legend-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.legend-high { background: #16a34a; }
+.legend-low { background: #f59e0b; }
+
+/* INSIGHTS */
+.insights-description,
+.top-report-description,
+.filter-presets-description,
+.saved-filters-description,
+.recent-history-description {
+    color: #64748b;
+    font-size: 14px;
+    margin: 0 0 20px;
+}
+
+.insight-name {
+    font-size: 24px;
+    font-weight: bold;
+    overflow-wrap: anywhere;
+}
+
+.insight-value,
+.insight-empty {
+    font-size: 14px;
+}
+
+.insight-spread {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    border-radius: 12px;
+    background: #eef2ff;
+}
+
+.insight-spread h3 {
+    margin: 0 0 8px;
+    color: #3730a3;
+}
+
+.insight-spread p {
+    margin: 0;
+    color: #475569;
+    font-size: 13px;
+}
+
+.insight-spread .insight-spread-number {
+    color: #4338ca;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+/* TOP PRIORITY REPORT */
+.top-report-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.top-report-item {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.top-report-label {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.top-report-name {
+    font-size: 14px;
+    font-weight: bold;
+    overflow-wrap: anywhere;
+}
+
+.top-report-value {
+    font-size: 13px;
+    color: #64748b;
+}
+
+.top-report-track {
+    height: 16px;
+    background: #e5e7eb;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.top-report-bar {
+    height: 100%;
+    width: 0;
+    background: #6366f1;
+    border-radius: 999px;
+    transition: width .4s ease;
+}
+
+.top-report-item:first-child .top-report-bar {
+    background: #4338ca;
+}
+
+.top-report-empty,
+.recent-history-empty {
+    padding: 16px;
+    background: #f8fafc;
+    color: #64748b;
+    border-radius: 8px;
+}
+
+/* FILTER PRESETS */
+.filter-presets-list,
+.saved-filters-form {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.filter-preset-link,
+.saved-filter-apply,
+.clear-button,
+.range-clear-link,
+.history-search-clear {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    color: #334155;
+    background: #f8fafc;
+}
+
+.filter-preset-link:hover,
+.clear-button:hover,
+.range-clear-link:hover,
+.history-search-clear:hover {
+    background: #e0e7ff;
+}
+
+.filter-preset-link.is-active {
+    background: #4338ca;
+    color: white;
+    border-color: #4338ca;
+}
+
+/* SAVED FILTERS */
+.saved-filter-save,
+.saved-filter-clear,
+.recent-history-remove-button,
+.recent-history-clear-button {
+    padding: 11px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.saved-filter-save {
+    background: #4338ca;
+    border: 1px solid #4338ca;
+    color: white;
+}
+
+.saved-filter-clear,
+.recent-history-remove-button,
+.recent-history-clear-button {
+    background: white;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+.saved-filter-apply {
+    background: #059669;
+    border-color: #059669;
+    color: white;
+}
+
+.saved-filter-status {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    border-radius: 8px;
+    padding: 16px;
+    color: #065f46;
+}
+
+.saved-filter-status p {
+    font-size: 14px;
+}
+
+.saved-filter-empty {
+    font-size: 14px;
+    color: #64748b;
+}
+
+/* RECENT FILTER HISTORY */
+.recent-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.recent-history-item {
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+}
+
+.recent-history-link {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #f8fafc;
+    color: #334155;
+    text-decoration: none;
+    line-height: 1.5;
+}
+
+.recent-history-link:hover {
+    background: #eef2ff;
+}
+
+.recent-history-label {
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+.recent-history-action {
+    font-size: 13px;
+    font-weight: bold;
+    color: #4338ca;
+}
+
+.recent-history-remove-form {
+    display: flex;
+    margin: 0;
+}
+
+.recent-history-clear-form {
+    margin-top: 16px;
+}
+
+/* HISTORY SEARCH */
+.history-search-form {
+    margin: 18px 0 12px;
+}
+
+.history-search-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #334155;
+}
+
+.history-search-help {
+    margin: 0 0 12px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #64748b;
+}
+
+.history-search-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.history-search-input {
+    flex: 1;
+    min-width: 180px;
+    padding: 11px 13px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.history-search-button {
+    padding: 11px 16px;
+    border: 0;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.history-results-count {
+    margin: 14px 0;
+    padding: 12px 14px;
+    border: 1px solid #c7d2fe;
+    border-radius: 8px;
+    background: #eef2ff;
+    color: #3730a3;
+    font-size: 14px;
+}
+
+/* CATEGORY FILTER FORM */
+.category-search-form {
+    display: flex;
+    align-items: end;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+    padding: 20px;
+    background: #f4f0fb;
+    border-radius: 12px;
+}
+
+.search-field,
+.filter-field,
+.sort-field,
+.range-filter-field {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 170px;
+}
+
+.search-field {
+    flex: 2;
+}
+
+.category-search-form label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #4338ca;
+}
+
+.category-search-form input,
+.category-search-form select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 1px solid #c7c7d1;
+    border-radius: 8px;
+    background: white;
+    font-size: 14px;
+}
+
+.range-filter-group {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    width: 100%;
+    margin: 12px 0;
+}
+
+.range-filter-field {
+    min-width: 0;
+}
+
+.range-validation {
+    padding: 14px 18px;
+    border: 1px solid #fdba74;
+    border-left: 4px solid #ea580c;
+    background: #fff7ed;
+    color: #9a3412;
+    border-radius: 8px;
+    margin: 12px 0;
+}
+
+.range-validation ul {
+    margin-bottom: 0;
+}
+
+.active-range-summary {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 16px;
+    margin: 12px 0;
+    background: #eef2ff;
+    border: 1px solid #c7d2fe;
+    border-radius: 8px;
+    color: #3730a3;
+}
+
+.active-range-label {
+    font-weight: bold;
+}
+
+/* CATEGORY RESULTS */
+.results-summary {
+    font-size: 14px;
+    color: #475569;
+    margin: 15px 0;
+}
+
+.category-table-wrap {
+    overflow-x: auto;
+}
+
+.category-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.category-table th,
+.category-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.category-table th {
+    background: #f4f0fb;
+    color: #4338ca;
+}
+
+.category-table tbody tr:hover {
+    background: #faf9ff;
+}
+
+.edit-link {
+    color: #4338ca;
+    font-weight: bold;
+    margin-right: 15px;
+    text-decoration: none;
+}
+
+.delete-link {
+    color: #b42318;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.edit-link:hover,
+.delete-link:hover {
+    text-decoration: underline;
+}
+
+.empty-state {
+    text-align: center;
+    color: #64748b;
+    padding: 30px;
+}
+
+/* PAGINATION */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 25px;
+}
+
+.pagination a {
+    color: #4338ca;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 8px 12px;
+    border: 1px solid #c7c7d1;
+    border-radius: 6px;
+}
+
+.page-info {
+    font-size: 14px;
+    color: #374151;
+}
+
+/* ACCESSIBILITY */
+.history-search-input:focus-visible,
+.history-search-button:focus-visible,
+.history-search-clear:focus-visible,
+.recent-history-link:focus-visible,
+.recent-history-remove-button:focus-visible,
+.recent-history-clear-button:focus-visible,
+.filter-preset-link:focus-visible,
+.saved-filter-save:focus-visible,
+.saved-filter-clear:focus-visible,
+.saved-filter-apply:focus-visible,
+.category-search-form input:focus-visible,
+.category-search-form select:focus-visible,
+.search-button:focus-visible,
+.clear-button:focus-visible,
+.range-clear-link:focus-visible,
+.pagination a:focus-visible {
+    outline: 3px solid #2563eb;
+    outline-offset: 3px;
+}
+
+.recent-history-remove-button,
+.recent-history-clear-button,
+.history-search-button {
+    min-height: 44px;
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 800px) {
+    .statistics-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .category-dashboard {
+        margin: 15px auto;
+        padding: 16px;
+    }
+
+    .statistics-grid,
+    .analytics-cards,
+    .insights-grid,
+    .range-filter-group {
+        grid-template-columns: 1fr;
+    }
+
+    .category-search-form,
+    .history-search-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-field,
+    .filter-field,
+    .sort-field,
+    .history-search-input {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .recent-history-item {
+        flex-direction: column;
+    }
+
+    .recent-history-remove-button,
+    .recent-history-remove-form,
+    .history-search-button,
+    .history-search-clear {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .category-table th,
+    .category-table td {
+        padding: 10px;
+        font-size: 13px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .top-report-bar,
+    .recent-history-link,
+    .filter-preset-link {
+        transition: none;
+    }
+}
+</style>
+
+<!-- MAIN DASHBOARD -->
+<div class="category-dashboard">
+
+    <!-- HEADER -->
+    <header class="dashboard-header">
+        <div>
+            <h1>Report Categories</h1>
+            <p class="dashboard-subtitle">
+                Search, filter, sort and manage your categories.
+            </p>
+        </div>
+
+        <a href="{% url 'report_category_create' %}"
+           class="add-category">
+            + Add Category
+        </a>
+    </header>
+
+    <!-- STATISTICS -->
+    <div class="statistics-grid">
+
+        <div class="stat-card stat-total">
+            <h3>Total Categories</h3>
+            <p class="stat-number">{{ category_stats.total }}</p>
+        </div>
+
+        <div class="stat-card stat-high">
+            <h3>High Priority</h3>
+            <p class="stat-number">{{ category_stats.high }}</p>
+        </div>
+
+        <div class="stat-card stat-low">
+            <h3>Low Priority</h3>
+            <p class="stat-number">{{ category_stats.low }}</p>
+        </div>
+
+        <div class="stat-card stat-average">
+            <h3>Average Priority</h3>
+            <p class="stat-number">
+                {{ category_stats.average|floatformat:2 }}
+            </p>
+        </div>
+
+    </div>
+
+    <!-- PRIORITY ANALYTICS -->
+    <section class="analytics-section">
+
+        <h2>Priority Analytics</h2>
+
+        <div class="analytics-cards">
+
+            <div class="analytics-card analytics-high">
+                <h3>High Priority</h3>
+
+                <p class="analytics-number">
+                    {{ category_stats.high_percentage|floatformat:2 }}%
+                </p>
+
+                <p class="analytics-count">
+                    {{ category_stats.high }} categories
+                </p>
+            </div>
+
+            <div class="analytics-card analytics-low">
+                <h3>Low Priority</h3>
+
+                <p class="analytics-number">
+                    {{ category_stats.low_percentage|floatformat:2 }}%
+                </p>
+
+                <p class="analytics-count">
+                    {{ category_stats.low }} categories
+                </p>
+            </div>
+
+        </div>
+
+        <h3>Priority Distribution</h3>
+
+        <div class="analytics-bar"
+             role="img"
+             aria-label="High priority {{ category_stats.high_percentage }} percent; low priority {{ category_stats.low_percentage }} percent">
+
+            <div class="analytics-bar-high"
+                 data-percentage="{{ category_stats.high_percentage }}">
+            </div>
+
+            <div class="analytics-bar-low"
+                 data-percentage="{{ category_stats.low_percentage }}">
+            </div>
+
+        </div>
+
+        <div class="analytics-legend">
+            <span>
+                <span class="legend-dot legend-high"></span>
+                High Priority
+            </span>
+
+            <span>
+                <span class="legend-dot legend-low"></span>
+                Low Priority
+            </span>
+        </div>
+
+    </section>
+
+    <!-- CATEGORY INSIGHTS -->
+    <section class="insights-section">
+
+        <h2>Category Insights</h2>
+
+        <p class="insights-description">
+            Explore the highest and lowest priority
+            categories in your dashboard.
+        </p>
+
+        <div class="insights-grid">
+
+            <div class="insight-card insight-highest">
+                <h3>Highest Priority Category</h3>
+
+                {% if category_insights.highest %}
+                    <p class="insight-name">
+                        {{ category_insights.highest.name }}
+                    </p>
+
+                    <p class="insight-value">
+                        Priority:
+                        {{ category_insights.highest.priority }}
+                    </p>
+                {% else %}
+                    <p class="insight-empty">
+                        No categories available.
+                    </p>
+                {% endif %}
+            </div>
+
+            <div class="insight-card insight-lowest">
+                <h3>Lowest Priority Category</h3>
+
+                {% if category_insights.lowest %}
+                    <p class="insight-name">
+                        {{ category_insights.lowest.name }}
+                    </p>
+
+                    <p class="insight-value">
+                        Priority:
+                        {{ category_insights.lowest.priority }}
+                    </p>
+                {% else %}
+                    <p class="insight-empty">
+                        No categories available.
+                    </p>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <div class="insight-spread">
+
+            <div>
+                <h3>Priority Spread</h3>
+
+                <p>
+                    Difference between the highest
+                    and lowest priority values.
+                </p>
+            </div>
+
+            <p class="insight-spread-number">
+                {{ category_insights.spread }}
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- TOP 5 PRIORITY REPORT -->
+    <section class="top-report-section">
+
+        <h2>Top 5 Priority Categories</h2>
+
+        <p class="top-report-description">
+            A visual comparison of your highest-priority
+            report categories.
+        </p>
+
+        {% if top_priority_report %}
+
+            <div class="top-report-chart">
+
+                {% for category in top_priority_report %}
+
+                    <div class="top-report-item">
+
+                        <div class="top-report-label">
+
+                            <span class="top-report-name">
+                                {{ category.name }}
+                            </span>
+
+                            <span class="top-report-value">
+                                Priority: {{ category.priority }}
+                            </span>
+
+                        </div>
+
+                        <div class="top-report-track">
+                            <div class="top-report-bar"
+                                 data-width="{{ category.percentage }}">
+                            </div>
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <p class="top-report-empty">
+                No categories available for this report.
+            </p>
+
+        {% endif %}
+
+    </section>
+
+    <!-- QUICK FILTER PRESETS -->
+    <section class="filter-presets-section">
+
+        <h2>Quick Filter Presets</h2>
+
+        <p class="filter-presets-description">
+            Apply commonly used category filters
+            with a single click.
+        </p>
+
+        <nav class="filter-presets-list"
+             aria-label="Category filter presets">
+
+            {% for preset in filter_presets %}
+
+                <a href="{{ preset.url }}"
+                   class="filter-preset-link{% if preset.active %} is-active{% endif %}"
+                   {% if preset.active %}aria-current="page"{% endif %}>
+
+                    {{ preset.label }}
+
+                </a>
+
+            {% endfor %}
+
+        </nav>
+
+    </section>
+
+    <!-- SAVED FILTER PREFERENCES -->
+    <section class="saved-filters-section">
+
+        <h2>Saved Filter Preferences</h2>
+
+        <p class="saved-filters-description">
+            Save your current dashboard filters
+            and restore them later.
+        </p>
+
+        <form method="post"
+              action="{% url 'report_category_list' %}"
+              class="saved-filters-form">
+
+            {% csrf_token %}
+
+            <input type="hidden"
+                   name="q"
+                   value="{{ current_category_filters.q }}">
+
+            <input type="hidden"
+                   name="priority"
+                   value="{{ current_category_filters.priority }}">
+
+            <input type="hidden"
+                   name="sort"
+                   value="{{ current_category_filters.sort }}">
+
+            <input type="hidden"
+                   name="min_priority"
+                   value="{{ current_category_filters.min_priority|default_if_none:'' }}">
+
+            <input type="hidden"
+                   name="max_priority"
+                   value="{{ current_category_filters.max_priority|default_if_none:'' }}">
+
+            <button type="submit"
+                    name="saved_filter_action"
+                    value="save"
+                    class="saved-filter-save">
+                Save Current Filters
+            </button>
+
+            {% if saved_category_filters %}
+
+                <button type="submit"
+                        name="saved_filter_action"
+                        value="clear"
+                        class="saved-filter-clear">
+                    Clear Saved Filters
+                </button>
+
+            {% endif %}
+
+        </form>
+
+        {% if saved_category_filters %}
+
+            <div class="saved-filter-status">
+
+                <strong>
+                    Saved preferences available
+                </strong>
+
+                <p>
+                    Search:
+                    {{ saved_category_filters.q|default:"Any" }}
+                </p>
+
+                <p>
+                    Priority:
+                    {{ saved_category_filters.priority }}
+                </p>
+
+                <p>
+                    Sorting:
+                    {{ saved_category_filters.sort }}
+                </p>
+
+                <a href="{{ saved_category_filters_url }}"
+                   class="saved-filter-apply">
+                    Apply Saved Filters
+                </a>
+
+            </div>
+
+        {% else %}
+
+            <p class="saved-filter-empty">
+                No filters saved yet.
+            </p>
+
+        {% endif %}
+
+    </section>
+
+    <!-- DAY 232: ACCESSIBLE FILTER HISTORY -->
+    <section class="recent-history-section"
+             aria-labelledby="recent-history-heading">
+
+        <div class="recent-history-header">
+
+            <h2 id="recent-history-heading">
+                Recent Filter History
+            </h2>
+
+            <p class="recent-history-description">
+                Search, restore, or remove your recent
+                dashboard filter combinations.
+            </p>
+
+        </div>
+
+        <!-- HISTORY SEARCH FORM -->
+        <form method="get"
+              action="{% url 'report_category_list' %}"
+              class="history-search-form"
+              role="search"
+              aria-label="Search recent filter history">
+
+            <label for="history-search-input">
+                Search Filter History
+            </label>
+
+            <p id="history-search-help"
+               class="history-search-help">
+                Search by category name, priority,
+                or sorting preference.
+            </p>
+
+            <div class="history-search-controls">
+
+                <input type="search"
+                       id="history-search-input"
+                       name="history_q"
+                       value="{{ history_search_query }}"
+                       placeholder="Enter a history keyword..."
+                       maxlength="100"
+                       aria-describedby="history-search-help"
+                       class="history-search-input">
+
+                <button type="submit"
+                        class="history-search-button">
+                    Search History
+                </button>
+
+                {% if history_search_active %}
+
+                    <a href="{% url 'report_category_list' %}"
+                       class="history-search-clear"
+                       aria-label="Clear history search">
+                        Clear Search
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        </form>
+
+        <!-- ACCESSIBLE FEEDBACK -->
+        <p class="history-results-count"
+           role="status"
+           aria-live="polite"
+           aria-atomic="true">
+
+            {{ history_search_feedback }}
+
+        </p>
+
+        <!-- HISTORY ENTRIES -->
+        {% if recent_filter_history %}
+
+            <div class="recent-history-list">
+
+                {% for entry in recent_filter_history %}
+
+                    <div class="recent-history-item">
+
+                        <a href="{{ entry.url }}"
+                           class="recent-history-link"
+                           aria-label="Apply filter: {{ entry.label }}">
+
+                            <span class="recent-history-label">
+                                {{ entry.label }}
+                            </span>
+
+                            <span class="recent-history-action"
+                                  aria-hidden="true">
+                                Apply
+                            </span>
+
+                        </a>
+
+                        <form method="post"
+                              action="{% url 'report_category_list' %}"
+                              class="recent-history-remove-form">
+
+                            {% csrf_token %}
+
+                            <input type="hidden"
+                                   name="history_index"
+                                   value="{{ entry.index }}">
+
+                            <button type="submit"
+                                    name="saved_filter_action"
+                                    value="remove_history_entry"
+                                    class="recent-history-remove-button"
+                                    aria-label="Remove {{ entry.label }} from history">
+                                Remove
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% elif history_search_active and recent_history_total_count %}
+
+            <p class="recent-history-empty">
+                No history entries match your search.
+                Try another keyword or clear the search.
+            </p>
+
+        {% else %}
+
+            <p class="recent-history-empty">
+                No recent filters yet.
+                Apply a dashboard filter to get started.
+            </p>
+
+        {% endif %}
+
+        <!-- CLEAR ALL HISTORY -->
+        {% if recent_history_total_count %}
+
+            <form method="post"
+                  action="{% url 'report_category_list' %}"
+                  class="recent-history-clear-form"
+                  aria-label="Clear recent filter history">
+
+                {% csrf_token %}
+
+                <button type="submit"
+                        name="saved_filter_action"
+                        value="clear_history"
+                        class="recent-history-clear-button">
+                    Clear All History
+                </button>
+
+            </form>
+
+        {% endif %}
+
+    </section>
+
+    <!-- CATEGORY SEARCH AND FILTERS -->
+    <section aria-labelledby="category-search-heading">
+
+        <h2 id="category-search-heading">
+            Search and Filter Categories
+        </h2>
+
+        <form method="get"
+              action="{% url 'report_category_list' %}"
+              class="category-search-form">
+
+            <div class="search-field">
+
+                <label for="category-search">
+                    Search Category
+                </label>
+
+                <input type="search"
+                       id="category-search"
+                       name="q"
+                       value="{{ query }}"
+                       placeholder="Search category name...">
+
+            </div>
+
+            <div class="filter-field">
+
+                <label for="priority-filter">
+                    Priority
+                </label>
+
+                <select id="priority-filter"
+                        name="priority">
+
+                    <option value="all"
+                            {% if priority_filter == 'all' %}selected{% endif %}>
+                        All Priorities
+                    </option>
+
+                    <option value="high"
+                            {% if priority_filter == 'high' %}selected{% endif %}>
+                        High Priority (5+)
+                    </option>
+
+                    <option value="low"
+                            {% if priority_filter == 'low' %}selected{% endif %}>
+                        Low Priority (Below 5)
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="sort-field">
+
+                <label for="sort-order">
+                    Sort By
+                </label>
+
+                <select id="sort-order"
+                        name="sort">
+
+                    <option value="name_asc"
+                            {% if sort_order == 'name_asc' %}selected{% endif %}>
+                        Name: A to Z
+                    </option>
+
+                    <option value="name_desc"
+                            {% if sort_order == 'name_desc' %}selected{% endif %}>
+                        Name: Z to A
+                    </option>
+
+                    <option value="priority_high"
+                            {% if sort_order == 'priority_high' %}selected{% endif %}>
+                        Priority: Highest First
+                    </option>
+
+                    <option value="priority_low"
+                            {% if sort_order == 'priority_low' %}selected{% endif %}>
+                        Priority: Lowest First
+                    </option>
+
+                </select>
+
+            </div>
+
+            <!-- PRIORITY RANGE -->
+            <div class="range-filter-group">
+
+                <div class="range-filter-field">
+
+                    <label for="min-priority">
+                        Minimum Priority
+                    </label>
+
+                    <input type="number"
+                           id="min-priority"
+                           name="min_priority"
+                           value="{{ min_priority|default_if_none:'' }}"
+                           placeholder="e.g. 4"
+                           step="1">
+
+                </div>
+
+                <div class="range-filter-field">
+
+                    <label for="max-priority">
+                        Maximum Priority
+                    </label>
+
+                    <input type="number"
+                           id="max-priority"
+                           name="max_priority"
+                           value="{{ max_priority|default_if_none:'' }}"
+                           placeholder="e.g. 8"
+                           step="1">
+
+                </div>
+
+            </div>
+
+            <!-- RANGE VALIDATION -->
+            {% if range_messages %}
+
+                <div class="range-validation"
+                     role="alert">
+
+                    <strong>
+                        Please check your priority filters:
+                    </strong>
+
+                    <ul>
+                        {% for message in range_messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+
+                </div>
+
+            {% endif %}
+
+            <!-- ACTIVE RANGE -->
+            {% if active_range_summary %}
+
+                <div class="active-range-summary">
+
+                    <span class="active-range-label">
+                        Active Range:
+                    </span>
+
+                    <span>
+                        {{ active_range_summary }}
+                    </span>
+
+                </div>
+
+            {% endif %}
+
+            <button type="submit"
+                    class="search-button">
+                Apply
+            </button>
+
+            <a href="{% url 'report_category_list' %}"
+               class="clear-button">
+                Clear
+            </a>
+
+            <a class="range-clear-link"
+               href="?q={{ query|urlencode }}&amp;priority={{ priority_filter|urlencode }}&amp;sort={{ sort_order|urlencode }}">
+                Clear Range Filters
+            </a>
+
+        </form>
+
+    </section>
+
+    <!-- CATEGORY RESULTS TABLE -->
+    <section aria-labelledby="category-results-heading">
+
+        <h2 id="category-results-heading">
+            Category Results
+        </h2>
+
+        <!-- RESTORED RESULTS SUMMARY -->
+        <p class="results-summary">
+
+            {% if query or priority_filter != 'all' or min_priority or max_priority %}
+
+                Matching categories:
+
+            {% else %}
+
+                Total categories:
+
+            {% endif %}
+
+            <strong>
+                {{ page_obj.paginator.count }}
+            </strong>
+
+        </p>
+
+        <div class="category-table-wrap">
+
+            <table class="category-table">
+
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Category Name</th>
+                        <th scope="col">Priority</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for category in categories %}
+
+                        <tr>
+
+                            <td>
+                                {{ category.pk }}
+                            </td>
+
+                            <td>
+                                {{ category.name }}
+                            </td>
+
+                            <td>
+                                {{ category.priority }}
+                            </td>
+
+                            <td>
+
+                                <a href="{% url 'report_category_update' category.pk %}"
+                                   class="edit-link">
+                                    Edit
+                                </a>
+
+                                <a href="{% url 'report_category_delete' category.pk %}"
+                                   class="delete-link">
+                                    Delete
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+                            <td colspan="4"
+                                class="empty-state">
+
+                                {% if category_stats.total == 0 %}
+
+                                    No report categories yet.
+
+                                {% elif query or priority_filter != 'all' or min_priority or max_priority %}
+
+                                    No matching report categories found.
+
+                                {% else %}
+
+                                    No report categories yet.
+
+                                {% endif %}
+
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <!-- PAGINATION -->
+        {% if is_paginated %}
+
+            <nav class="pagination"
+                 aria-label="Category pagination">
+
+                {% if page_obj.has_previous %}
+
+                    <a href="?q={{ query|urlencode }}&amp;priority={{ priority_filter|urlencode }}&amp;sort={{ sort_order|urlencode }}&amp;min_priority={{ min_priority|default_if_none:''|urlencode }}&amp;max_priority={{ max_priority|default_if_none:''|urlencode }}&amp;page={{ page_obj.previous_page_number }}">
+                        Previous
+                    </a>
+
+                {% endif %}
+
+                <span class="page-info">
+                    Page {{ page_obj.number }}
+                    of {{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                <a href="?q={{ query|urlencode }}&amp;priority={{ priority_filter|urlencode }}&amp;sort={{ sort_order|urlencode }}{% if min_priority %}&amp;min_priority={{ min_priority|urlencode }}{% endif %}{% if max_priority %}&amp;max_priority={{ max_priority|urlencode }}{% endif %}&amp;page={{ page_obj.next_page_number }}">
+    Next
+</a>
+                {% endif %}
+
+            </nav>
+
+        {% endif %}
+
+    </section>
+
+</div>
+
+<!-- CHART WIDTHS -->
+<script>
+(function () {
+    "use strict";
+
+    document.querySelectorAll(
+        ".analytics-bar-high, .analytics-bar-low"
+    ).forEach(function (bar) {
+
+        var value = Number(bar.dataset.percentage);
+
+        if (Number.isFinite(value)) {
+            bar.style.width =
+                Math.max(0, Math.min(100, value)) + "%";
+        }
+
+    });
+
+    document.querySelectorAll(
+        ".top-report-bar"
+    ).forEach(function (bar) {
+
+        var value = Number(bar.dataset.width);
+
+        if (Number.isFinite(value)) {
+            bar.style.width =
+                Math.max(0, Math.min(100, value)) + "%";
+        }
+
+    });
+}());
+</script>
+
+{% endblock %}

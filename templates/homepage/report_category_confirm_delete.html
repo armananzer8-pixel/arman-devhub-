@@ -1,0 +1,52 @@
+
+{% extends "homepage/base.html" %}
+
+{% block content %}
+
+<div style="
+    max-width: 550px;
+    margin: 60px auto;
+    padding: 30px;
+    border-radius: 15px;
+    background: white;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.12);
+">
+
+    <h1 style="color: #b42318;">
+        Delete Report Category
+    </h1>
+
+    <p>
+        Are you sure you want to delete
+        <strong>{{ object.name }}</strong>?
+    </p>
+
+    <p>
+        This action cannot be undone.
+    </p>
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        <button type="submit" style="
+            padding: 12px 22px;
+            background: #b42318;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        ">
+            Yes, Delete Category
+        </button>
+
+        <a href="{% url 'report_category_update' object.pk %}"
+           style="margin-left: 15px;">
+            Cancel
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}

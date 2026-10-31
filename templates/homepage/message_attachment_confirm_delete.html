@@ -1,0 +1,84 @@
+
+{% extends "homepage/base.html" %}
+
+{% block title %}
+Delete Attachment | Arman DevHub
+{% endblock %}
+
+
+{% block content %}
+
+<div class="card"
+     style="
+        max-width:650px;
+        margin:40px auto;
+        padding:25px;
+     ">
+
+    <h1 style="color:#b91c1c;">
+        Delete Attachment
+    </h1>
+
+    <p>
+        Are you sure you want to delete
+        this attachment?
+    </p>
+
+    <div style="
+        background:#fef2f2;
+        border:1px solid #fecaca;
+        border-radius:10px;
+        padding:18px;
+        margin:20px 0;
+    ">
+
+        <p>
+            <strong>Filename:</strong>
+            {{ attachment.file.name }}
+        </p>
+
+        <p>
+            <strong>Contact Message:</strong>
+            {{ attachment.contact_message.name }}
+        </p>
+
+    </div>
+
+    <p style="color:#b91c1c;">
+        Warning: The attachment will be
+        permanently removed from storage.
+    </p>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <button type="submit"
+                style="
+                    background:#dc2626;
+                    color:white;
+                    border:none;
+                    border-radius:8px;
+                    padding:12px 20px;
+                    cursor:pointer;
+                    margin-right:12px;
+                ">
+            Yes, Delete Attachment
+        </button>
+
+        <a
+            href="{% url 'message_detail' attachment.contact_message_id %}"
+            style="
+                color:#4338ca;
+                text-decoration:none;
+                font-weight:bold;
+            "
+        >
+            Cancel
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}

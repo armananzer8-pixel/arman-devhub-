@@ -1,0 +1,98 @@
+
+{% extends "homepage/base.html" %}
+
+{% block title %}
+Replace Attachment | Arman DevHub
+{% endblock %}
+
+{% block content %}
+
+<div style="
+    max-width:650px;
+    margin:40px auto;
+    background:white;
+    border-radius:14px;
+    padding:28px;
+">
+
+    <h1 style="color:#4338ca;">
+        Replace Attachment
+    </h1>
+
+    <p>
+        Upload a new file to replace the
+        existing attachment.
+    </p>
+
+    <div style="
+        background:#eef2ff;
+        padding:15px;
+        border-radius:8px;
+        margin-bottom:20px;
+    ">
+
+        <strong>Current file:</strong>
+
+        <p>
+            {{ attachment.file.name }}
+        </p>
+
+    </div>
+
+    <form method="POST"
+          enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        <label for="{{ form.file.id_for_label }}">
+            <strong>Select new file</strong>
+        </label>
+
+        <p>
+            {{ form.file }}
+        </p>
+
+        {% for error in form.file.errors %}
+            <p style="color:#dc2626;">
+                {{ error }}
+            </p>
+        {% endfor %}
+
+        {% for error in form.non_field_errors %}
+            <p style="color:#dc2626;">
+                {{ error }}
+            </p>
+        {% endfor %}
+
+        <p style="color:#6b7280;">
+            Allowed: PDF or TXT, maximum 1 MB.
+        </p>
+
+        <button type="submit"
+                style="
+                    background:#4338ca;
+                    color:white;
+                    border:none;
+                    padding:12px 20px;
+                    border-radius:8px;
+                    cursor:pointer;
+                ">
+            Replace Attachment
+        </button>
+
+        <a
+            href="{% url 'message_detail' attachment.contact_message_id %}"
+            style="
+                margin-left:15px;
+                color:#4338ca;
+                text-decoration:none;
+            "
+        >
+            Cancel
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}

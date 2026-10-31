@@ -1,0 +1,31 @@
+
+{% extends "homepage/base.html" %}
+
+{% block title %}Upload Attachment | Arman DevHub{% endblock %}
+
+{% block content %}
+
+<div style="max-width:600px;margin:40px auto;padding:25px;background:white;border-radius:12px;">
+
+    <h2>Upload Attachment</h2>
+
+    <p>Upload an attachment for {{ contact_message.name }}.</p>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit"
+                style="background:#4338ca;color:white;padding:12px 20px;border:0;border-radius:7px;">
+            Upload Attachment
+        </button>
+
+        <a href="{% url 'attachment_dashboard' %}">
+            Back to Message
+        </a>
+    </form>
+
+</div>
+
+{% endblock %}

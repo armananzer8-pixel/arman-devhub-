@@ -1,0 +1,129 @@
+
+{% extends "homepage/base.html" %}
+
+{% block content %}
+
+<style>
+    .category-page {
+        max-width: 620px;
+        margin: 40px auto;
+        padding: 30px;
+        background: white;
+        border-radius: 18px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        font-family: Arial, sans-serif;
+    }
+
+    .category-page h1 {
+        color: #5936a2;
+        margin-bottom: 10px;
+    }
+
+    .category-page p {
+        color: #555;
+    }
+
+    .category-page label {
+        display: block;
+        margin: 18px 0 7px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .category-page input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-sizing: border-box;
+        font-size: 15px;
+    }
+
+    .category-page button {
+        width: 100%;
+        margin-top: 24px;
+        padding: 13px;
+        background: #5936a2;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .category-page button:hover {
+        background: #452583;
+    }
+
+    .form-error {
+        color: #b42318;
+        font-size: 14px;
+        margin-top: 6px;
+    }
+
+    .success-message {
+        background: #e6f7ec;
+        color: #17663b;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 18px;
+    }
+</style>
+
+<div class="category-page">
+
+    <h1>Create Report Category</h1>
+
+    <p>
+    <a href="{% url 'report_category_list' %}">
+        View All Report Categories
+    </a>
+</p>
+    <p>
+        Add a new category to your Arman DevHub
+        reporting system.
+    </p>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="success-message">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        {% for error in form.non_field_errors %}
+            <div class="form-error">
+                {{ error }}
+            </div>
+        {% endfor %}
+
+        {% for field in form %}
+
+            <label for="{{ field.id_for_label }}">
+                {{ field.label }}
+            </label>
+
+            {{ field }}
+
+            {% for error in field.errors %}
+                <div class="form-error">
+                    {{ error }}
+                </div>
+            {% endfor %}
+
+        {% endfor %}
+
+        <button type="submit">
+            Create Category
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

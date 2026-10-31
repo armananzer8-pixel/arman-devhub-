@@ -1,0 +1,70 @@
+/* ===== MAIN BACKGROUND ===== */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #bbf7d0;
+    text-align: center;
+}
+
+/* ===== PURPLE NAVIGATION BAR ===== */
+nav {
+    background-color: #4338ca;
+    padding: 20px;
+}
+
+nav a {
+    color: white;
+    margin: 15px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+nav a:hover {
+    color: #fde68a;
+}
+
+/* ===== MAIN CONTENT ===== */
+main {
+    padding: 30px 20px;
+}
+
+h1 {
+    color: #4338ca;
+}
+
+/* ===== WHITE CARDS ===== */
+.card {
+    background-color: white;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #4338ca;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #312e81;
+}
+
+/* ===== CONTACT FORM ===== */
+.contact-form {
+    text-align: left;
+}
+
+.contact-form label {
+    display: block;
+    margin-bottom: 8px;
+}

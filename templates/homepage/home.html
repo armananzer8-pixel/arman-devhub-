@@ -1,0 +1,302 @@
+
+{% extends "homepage/base.html" %}
+
+{% block title %}
+Home | Arman DevHub
+{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+    .hero {
+        background: linear-gradient(
+            135deg,
+            #4338ca,
+            #7c3aed
+        );
+
+        border-radius: 16px;
+        padding: 45px 25px;
+        color: white;
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .hero h1 {
+        color: white;
+        font-size: 34px;
+    }
+
+    .hero p {
+        font-size: 17px;
+        color: #e0e7ff;
+    }
+
+    .hero-actions {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 24px;
+    }
+
+    .hero-button {
+        display: inline-block;
+        padding: 12px 20px;
+        background: white;
+        color: #4338ca;
+        text-decoration: none;
+        font-weight: bold;
+        border-radius: 8px;
+    }
+
+    .hero-button.secondary {
+        background: transparent;
+        color: white;
+        border: 2px solid white;
+    }
+
+    .feature-grid {
+        display: grid;
+        grid-template-columns:
+            repeat(auto-fit, minmax(210px, 1fr));
+        gap: 18px;
+        margin-top: 20px;
+    }
+
+    .feature {
+        background: #f3f4f6;
+        padding: 22px;
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    .feature h3 {
+        margin-top: 0;
+    }
+
+    .feature p {
+        color: #4b5563;
+    }
+
+    .feature a {
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .section-title {
+        text-align: center;
+        color: #312e81;
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<!-- WELCOME SECTION -->
+
+<section class="hero">
+
+    {% if user.is_authenticated %}
+
+        <h1>
+            Welcome Back,
+            {{ user.get_full_name|default:user.username }}!
+        </h1>
+
+        <p>
+            Welcome to Arman DevHub.
+            Learn. Build. Innovate.
+        </p>
+
+        <div class="hero-actions">
+
+            <a href="{% url 'learning_hub' %}"
+               class="hero-button">
+                Explore Learning Hub
+            </a>
+
+            <a href="{% url 'profile' %}"
+               class="hero-button secondary">
+                My Profile
+            </a>
+
+        </div>
+
+    {% else %}
+
+        <h1>Welcome to Arman DevHub!</h1>
+
+        <p>
+            Learn Python, explore Django,
+            and discover backend development.
+        </p>
+
+        <div class="hero-actions">
+
+            <a href="{% url 'learning_hub' %}"
+               class="hero-button">
+                Explore Learning Hub
+            </a>
+
+            <a href="{% url 'signup' %}"
+               class="hero-button secondary">
+                Create Account
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</section>
+
+
+<!-- ABOUT SECTION -->
+
+<section class="card">
+
+    <h2 class="section-title">
+        About Arman DevHub
+    </h2>
+
+    <p>
+        Arman DevHub is a Python and Django
+        development website.
+    </p>
+
+    <p>
+        It brings together backend concepts,
+        database models, authentication,
+        forms, and class-based views.
+    </p>
+
+</section>
+
+
+<!-- WEBSITE FEATURES -->
+
+<section class="card">
+
+    <h2 class="section-title">
+        Explore Our Features
+    </h2>
+
+    <div class="feature-grid">
+
+        <div class="feature">
+
+            <h3>📚 Learning Hub</h3>
+
+            <p>
+                Learn about Django Templates,
+                ORM, and Class-Based Views.
+            </p>
+
+            <a href="{% url 'learning_hub' %}">
+                Explore Topics →
+            </a>
+
+        </div>
+
+        <div class="feature">
+
+            <h3>✉️ Contact Form</h3>
+
+            <p>
+                Submit messages using
+                Django forms.
+            </p>
+
+            <a href="{% url 'contact' %}">
+                Contact Us →
+            </a>
+
+        </div>
+
+        <div class="feature">
+
+            <h3>👤 User Profile</h3>
+
+            <p>
+                Manage account information
+                and developer details.
+            </p>
+
+            {% if user.is_authenticated %}
+
+                <a href="{% url 'profile' %}">
+                    View Profile →
+                </a>
+
+            {% else %}
+
+                <a href="{% url 'login' %}">
+                    Login →
+                </a>
+
+            {% endif %}
+
+        </div>
+
+        <div class="feature">
+
+            <h3>💻 About Us</h3>
+
+            <p>
+                Learn about this website
+                and the technologies used.
+            </p>
+
+            <a href="{% url 'about' %}">
+                Learn More →
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- STAFF SECTION -->
+
+{% if user.is_authenticated and user.is_staff %}
+
+<section class="card">
+
+    <h2 class="section-title">
+        Staff Dashboard
+    </h2>
+
+    <p style="text-align: center;">
+        Review contact messages,
+        manage records, and
+        explore the Message Browser.
+    </p>
+
+    <div class="hero-actions">
+
+        <a href="{% url 'message_list' %}"
+           class="hero-button"
+           style="background:#4338ca;color:white;">
+            Messages Dashboard
+        </a>
+
+        <a href="{% url 'message_browse' %}"
+           class="hero-button"
+           style="background:#4338ca;color:white;">
+            Message Browser
+        </a>
+
+    </div>
+
+</section>
+
+{% endif %}
+
+{% endblock %}
